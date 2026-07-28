@@ -18,8 +18,6 @@ return (
 
 <Routes>
 
-
-
 <Route
 
 path="/register"
