@@ -3,6 +3,7 @@ stages:
   - test
   - build
   - security
+  - publish
 
 frontend_lint:
   stage: test
@@ -61,3 +62,15 @@ trivy_backend_scan:
     - docker
   script:
     - '& "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\trivy.exe" image --severity HIGH,CRITICAL --exit-code 1 cloud-task-platform-backend:ci'
+
+
+publish_images:
+  stage: publish
+  tags:
+    - docker
+  script:
+    - '$env:CI_REGISTRY_PASSWORD | docker login $env:CI_REGISTRY -u $env:CI_REGISTRY_USER --password-stdin'
+    - docker tag cloud-task-platform-frontend:ci "$env:CI_REGISTRY_IMAGE/frontend:$env:CI_COMMIT_SHORT_SHA"
+    - docker tag cloud-task-platform-backend:ci "$env:CI_REGISTRY_IMAGE/backend:$env:CI_COMMIT_SHORT_SHA"
+    - docker push "$env:CI_REGISTRY_IMAGE/frontend:$env:CI_COMMIT_SHORT_SHA"
+    - docker push "$env:CI_REGISTRY_IMAGE/backend:$env:CI_COMMIT_SHORT_SHA"
