@@ -1,0 +1,13 @@
+stages:
+  - test
+
+runner_test:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Gitlab Runner is working!"
+    - echo "Cloud Task Platform CI/CD pipeline started."
+    - git --version
+
+    
