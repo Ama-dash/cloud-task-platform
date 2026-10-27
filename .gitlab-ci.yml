@@ -1,6 +1,7 @@
 
 stages:
   - test
+  - build
 
 frontend_lint:
   stage: test
@@ -28,3 +29,19 @@ backend_check:
     - cd backend
     - npm ci
     - node --check src/server.js
+
+docker_build_frontend:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker version
+    - docker build -t cloud-task-platform-frontend ./frontend
+
+docker_build_backend:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker version
+    - docker build -t cloud-task-platform-backend ./backend
