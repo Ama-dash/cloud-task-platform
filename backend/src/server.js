@@ -29,6 +29,14 @@ app.get("/", (req, res) => {
 
 });
 
+// Health check route
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "healthy"
+    });
+});
+
+
 
 
 // Database test route
