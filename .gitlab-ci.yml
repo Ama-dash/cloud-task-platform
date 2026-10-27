@@ -2,6 +2,7 @@
 stages:
   - test
   - build
+  - security
 
 frontend_lint:
   stage: test
@@ -36,7 +37,7 @@ docker_build_frontend:
     - docker
   script:
     - docker version
-    - docker build -t cloud-task-platform-frontend ./frontend
+    - docker build --pull -t cloud-task-platform-frontend:ci ./frontend
 
 docker_build_backend:
   stage: build
@@ -44,4 +45,11 @@ docker_build_backend:
     - docker
   script:
     - docker version
-    - docker build -t cloud-task-platform-backend ./backend
+    - docker build -t cloud-task-platform-backend:ci ./backend
+
+trivy_frontend_scan:
+  stage: security
+  tags:
+    - docker
+  script:
+    - '& "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\trivy.exe" image --severity HIGH,CRITICAL --exit-code 1 cloud-task-platform-frontend:ci'
