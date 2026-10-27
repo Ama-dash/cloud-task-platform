@@ -53,3 +53,11 @@ trivy_frontend_scan:
     - docker
   script:
     - '& "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\trivy.exe" image --severity HIGH,CRITICAL --exit-code 1 cloud-task-platform-frontend:ci'
+
+
+trivy_backend_scan:
+  stage: security
+  tags:
+    - docker
+  script:
+    - '& "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\trivy.exe" image --severity HIGH,CRITICAL --exit-code 1 cloud-task-platform-backend:ci'
