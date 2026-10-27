@@ -1,78 +1,54 @@
 
-
 services:
-  
   frontend:
-
-     container_name: task-frontend
-
-     build:
+    container_name: task-frontend
+    build:
       context: ./frontend
-
-     ports:
-       - "3000:80"
-
-     depends_on:
-       - backend
-
-     networks:
-       - task-network
-
-
-
-  backend:
-
-      container_name: task-backend
-
-      build:
-        context: ./backend
-
-      ports:
-       - "5000:5000"
-
-      env_file:
-       - .env
-
-         
-
-      depends_on:
-       - postgres
-
-      networks:
-       - task-network
-
-
-  postgres:
-
-    container_name: task-postgres
-
-    image: postgres:16
-
-    environment:
-
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-
-    ports:
-      - "5432:5432"
-
     networks:
       - task-network
 
+  backend:
+    container_name: task-backend
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - task-network
 
+  postgres:
+    container_name: task-postgres
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - task-network
 
-
+  nginx:
+    container_name: task-nginx
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - task-network
 
 networks:
-  
   task-network:
 
-
 volumes:
-  
   postgres-data:

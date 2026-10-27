@@ -59,7 +59,7 @@ function Register() {
 
 
 
-            // Redirect to login page
+            // Redirect to login page after registration
 
             navigate("/login");
 
@@ -78,6 +78,7 @@ function Register() {
 
 
     };
+
 
 
 
@@ -207,11 +208,33 @@ function Register() {
 
                         Register
 
+
                     </button>
 
 
 
                 </form>
+
+
+
+                <p className="text-center mt-5 text-gray-500">
+
+                    Already have an account?
+
+                    <button
+
+                        className="text-blue-600 ml-2 hover:underline"
+
+                        onClick={() => navigate("/login")}
+
+                    >
+
+                        Login
+
+                    </button>
+
+
+                </p>
 
 
 
