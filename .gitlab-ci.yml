@@ -1,13 +1,30 @@
+
 stages:
   - test
 
-runner_test:
+frontend_lint:
   stage: test
   tags:
     - docker
   script:
-    - echo "Gitlab Runner is working!"
-    - echo "Cloud Task Platform CI/CD pipeline started."
-    - git --version
+    - cd frontend
+    - npm ci
+    - npm run lint
 
-    
+frontend_build:
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+
+backend_check:
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd backend
+    - npm ci
+    - node --check src/server.js
