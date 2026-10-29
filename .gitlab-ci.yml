@@ -4,6 +4,7 @@ stages:
   - build
   - security
   - publish
+  - deploy
 
 frontend_lint:
   stage: test
@@ -74,3 +75,20 @@ publish_images:
     - docker tag cloud-task-platform-backend:ci "$env:CI_REGISTRY_IMAGE/backend:$env:CI_COMMIT_SHORT_SHA"
     - docker push "$env:CI_REGISTRY_IMAGE/frontend:$env:CI_COMMIT_SHORT_SHA"
     - docker push "$env:CI_REGISTRY_IMAGE/backend:$env:CI_COMMIT_SHORT_SHA"
+
+
+deploy_local:
+  stage: deploy
+  tags:
+    - docker
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - 'Set-Location "C:\Users\amasa\Desktop\cloud-task-platform"'
+    - '$env:IMAGE_TAG = $env:CI_COMMIT_SHORT_SHA'
+    - 'docker compose config --quiet'
+    - '$env:CI_REGISTRY_PASSWORD | docker login $env:CI_REGISTRY -u $env:CI_REGISTRY_USER --password-stdin'
+    - 'docker compose pull frontend backend'
+    - 'docker compose up -d --no-build frontend backend nginx'
+    - 'docker compose ps'
+    - 'Invoke-RestMethod http://localhost:8080/api/health'
