@@ -13,3 +13,5 @@ build/
 
 # OS files
 .DS_Store
+# Generated security scan reports
+backend/trivy-backend-scan.txt
